@@ -33,6 +33,32 @@ public class PriorityQueueCustom<T> {
     }
 
     /**
+     * Создаёт очередь из массива элементов за O(n) методом просеивания вниз.
+     *
+     * @param array исходный массив элементов
+     */
+    public PriorityQueueCustom(T[] array) {
+        if (array == null) {
+            throw new NullPointerException("Array cannot be null");
+        }
+        int capacity = Math.max(DEFAULT_CAPACITY, array.length);
+        this.arr = new Object[capacity];
+        this.n = array.length;
+        this.comparator = null;
+
+        for (int i = 0; i < n; i++) {
+            if (array[i] == null) {
+                throw new NullPointerException("Item cannot be null");
+            }
+            this.arr[i] = array[i];
+        }
+
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            siftDown(i);
+        }
+    }
+
+    /**
      * Добавляет элемент в очередь за O(log n).
      *
      * @param item добавляемый элемент
@@ -63,7 +89,7 @@ public class PriorityQueueCustom<T> {
         T top = (T) arr[0];
         n--;
         arr[0] = arr[n];
-        arr[n] = null; // очищаем ссылку, чтобы не было утечки памяти
+        arr[n] = null; //чтобы не было утечки памяти
         if (n > 0) {
             siftDown(0);
         }
@@ -97,7 +123,8 @@ public class PriorityQueueCustom<T> {
         }
         arr[index] = arr[n];
         arr[n] = null;
-        // Перенесённый элемент может нарушать порядок кучи как вниз, так и вверх
+
+
         siftDown(index);
         siftUp(index);
         return true;
