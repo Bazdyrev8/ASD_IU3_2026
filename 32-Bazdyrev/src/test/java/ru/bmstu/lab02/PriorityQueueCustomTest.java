@@ -159,4 +159,75 @@ class PriorityQueueCustomTest {
         assertEquals(2, pq.poll());
         assertEquals(4, pq.poll());
     }
+
+    @Test
+    void shouldReturnFalseWhenRemovingFromEmptyQueue() {
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
+        assertFalse(pq.remove(10));
+        assertTrue(pq.isEmpty());
+    }
+
+    @Test
+    void shouldReturnFalseWhenRemovingNonExistentOrNullElement() {
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
+        pq.add(1);
+        pq.add(5);
+        pq.add(3);
+
+        assertFalse(pq.remove(99));
+        assertFalse(pq.remove(null));
+        assertEquals(3, pq.size());
+    }
+
+    @Test
+    void shouldRemoveRootAndRestoreHeap() {
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
+        int[] input = {5, 1, 9, 2, 7};
+        for (int x : input) {
+            pq.add(x);
+        }
+
+        assertTrue(pq.remove(1));
+        assertEquals(4, pq.size());
+        assertEquals(2, pq.poll());
+        assertEquals(5, pq.poll());
+        assertEquals(7, pq.poll());
+        assertEquals(9, pq.poll());
+        assertTrue(pq.isEmpty());
+    }
+
+    @Test
+    void shouldRemoveMiddleElementAndRestoreHeap() {
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
+        int[] input = {1, 10, 2, 20, 30, 3, 4};
+        for (int x : input) {
+            pq.add(x);
+        }
+
+        // Удаляем 30: на его место встанет 4, который должен просеяться вверх над 10
+        assertTrue(pq.remove(30));
+        assertEquals(6, pq.size());
+
+        int[] expected = {1, 2, 3, 4, 10, 20};
+        for (int exp : expected) {
+            assertEquals(exp, pq.poll());
+        }
+        assertTrue(pq.isEmpty());
+    }
+
+    @Test
+    void shouldRemoveOnlyFirstOccurrenceOfDuplicate() {
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
+        pq.add(5);
+        pq.add(2);
+        pq.add(5);
+        pq.add(1);
+
+        assertTrue(pq.remove(5));
+        assertEquals(3, pq.size());
+        assertEquals(1, pq.poll());
+        assertEquals(2, pq.poll());
+        assertEquals(5, pq.poll());
+        assertTrue(pq.isEmpty());
+    }
 }
