@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class PriorityQueueCustomTest {
 
+    // Новая очередь должна быть пустой, а peek() возвращать null
     @Test
     void shouldBeEmptyWhenCreated() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -20,18 +21,21 @@ class PriorityQueueCustomTest {
         assertNull(pq.peek());
     }
 
+    // Извлечение из пустой очереди должно бросать NoSuchElementException
     @Test
     void shouldThrowExceptionWhenPollingEmptyQueue() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
         assertThrows(NoSuchElementException.class, pq::poll);
     }
 
+    // Вставка null запрещена
     @Test
     void shouldThrowExceptionWhenAddingNull() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
         assertThrows(NullPointerException.class, () -> pq.add(null));
     }
 
+    // Граничный случай: добавление и извлечение одного элемента
     @Test
     void shouldHandleSingleElement() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -45,6 +49,7 @@ class PriorityQueueCustomTest {
         assertEquals(0, pq.size());
     }
 
+    // Базовая проверка min-heap: извлечение в порядке неубывания
     @Test
     void shouldExtractElementsInNonDecreasingOrder() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -62,6 +67,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // Повторяющиеся значения не должны теряться и нарушать порядок
     @Test
     void shouldHandleDuplicateElements() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -79,6 +85,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // Проверка автоматического расширения массива при превышении DEFAULT_CAPACITY
     @Test
     void shouldGrowAutomaticallyBeyondDefaultCapacity() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -94,6 +101,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // Проверка работы обобщённого типа с Comparable-строками
     @Test
     void shouldWorkWithStrings() {
         PriorityQueueCustom<String> pq = new PriorityQueueCustom<>();
@@ -106,6 +114,7 @@ class PriorityQueueCustomTest {
         assertEquals("cherry", pq.poll());
     }
 
+    // Режим max-heap через обратный компаратор (1B)
     @Test
     void shouldWorkAsMaxHeapWithReverseComparator() {
         PriorityQueueCustom<Integer> maxHeap = new PriorityQueueCustom<>(Comparator.<Integer>reverseOrder());
@@ -122,6 +131,7 @@ class PriorityQueueCustomTest {
         assertTrue(maxHeap.isEmpty());
     }
 
+    // Режим min-heap с явно переданным компаратором (1B)
     @Test
     void shouldWorkAsMinHeapWithExplicitComparator() {
         PriorityQueueCustom<Integer> minHeap = new PriorityQueueCustom<>(Comparator.<Integer>naturalOrder());
@@ -134,6 +144,7 @@ class PriorityQueueCustomTest {
         assertEquals(10, minHeap.poll());
     }
 
+    // Пользовательский компаратор: сортировка строк по длине (1B)
     @Test
     void shouldOrderStringsByLengthUsingCustomComparator() {
         PriorityQueueCustom<String> pq = new PriorityQueueCustom<>(
@@ -148,6 +159,7 @@ class PriorityQueueCustomTest {
         assertEquals("elephant", pq.poll());
     }
 
+    // Если компаратор null, должен работать естественный порядок (1B)
     @Test
     void shouldUseNaturalOrderWhenComparatorIsNull() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>((Comparator<Integer>) null);
@@ -160,6 +172,7 @@ class PriorityQueueCustomTest {
         assertEquals(4, pq.poll());
     }
 
+    // Удаление из пустой очереди возвращает false (1C)
     @Test
     void shouldReturnFalseWhenRemovingFromEmptyQueue() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -167,6 +180,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // Удаление отсутствующего элемента или null не меняет очередь (1C)
     @Test
     void shouldReturnFalseWhenRemovingNonExistentOrNullElement() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -179,6 +193,7 @@ class PriorityQueueCustomTest {
         assertEquals(3, pq.size());
     }
 
+    // Удаление корня кучи с последующим восстановлением порядка (1C)
     @Test
     void shouldRemoveRootAndRestoreHeap() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -196,6 +211,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // Удаление из середины: проверяем просеивание вверх после подстановки хвоста (1C)
     @Test
     void shouldRemoveMiddleElementAndRestoreHeap() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -204,7 +220,6 @@ class PriorityQueueCustomTest {
             pq.add(x);
         }
 
-        // Удаляем 30: на его место встанет 4, который должен просеяться вверх над 10
         assertTrue(pq.remove(30));
         assertEquals(6, pq.size());
 
@@ -215,6 +230,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // При наличии дубликатов remove() удаляет только первое вхождение (1C)
     @Test
     void shouldRemoveOnlyFirstOccurrenceOfDuplicate() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>();
@@ -231,6 +247,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // Построение кучи из массива за O(n) с отрицательными и повторяющимися числами (1D)
     @Test
     void shouldBuildHeapFromArrayInLinearTime() {
         Integer[] input = {9, 4, 7, 1, -2, 6, 5, 4};
@@ -244,6 +261,7 @@ class PriorityQueueCustomTest {
         assertTrue(pq.isEmpty());
     }
 
+    // Построение из пустого массива оставляет очередь рабочей для новых add() (1D)
     @Test
     void shouldBuildEmptyHeapFromEmptyArrayAndAllowAdding() {
         PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>(new Integer[0]);
@@ -256,12 +274,14 @@ class PriorityQueueCustomTest {
         assertEquals(10, pq.poll());
     }
 
+    // Null-массив или null-элемент внутри массива должны бросать NullPointerException (1D)
     @Test
     void shouldThrowExceptionWhenBuildingFromNullArrayOrNullElement() {
         assertThrows(NullPointerException.class, () -> new PriorityQueueCustom<>((Integer[]) null));
         assertThrows(NullPointerException.class, () -> new PriorityQueueCustom<>(new Integer[]{1, null, 3}));
     }
 
+    // Изменение исходного массива после создания кучи не должно влиять на неё (1D)
     @Test
     void shouldNotAffectHeapWhenSourceArrayIsModified() {
         Integer[] input = {5, 2, 8};
