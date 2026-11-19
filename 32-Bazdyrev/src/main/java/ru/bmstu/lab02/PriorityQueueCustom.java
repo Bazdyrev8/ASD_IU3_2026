@@ -1,9 +1,10 @@
 package ru.bmstu.lab02;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 
 /**
- * Очередь с приоритетом (min-heap) на основе динамического массива.
+ * Очередь с приоритетом (min-heap или max-heap) на основе динамического массива.
  *
  * @param <T> тип элементов очереди
  */
@@ -12,11 +13,23 @@ public class PriorityQueueCustom<T> {
 
     private Object[] arr;
     private int n;
+    private final Comparator<T> comparator;
 
-    // Создаёт пустую очередь с приоритетом.
+    // Создаёт пустую очередь с естественным порядком сортировки (min-heap).
     public PriorityQueueCustom() {
+        this((Comparator<T>) null);
+    }
+
+    /**
+     * Создаёт пустую очередь с заданным comparator.
+     * Если comparator равен null, используется естественный порядок.
+     *
+     * @param comparator компаратор для определения приоритета
+     */
+    public PriorityQueueCustom(Comparator<T> comparator) {
         this.arr = new Object[DEFAULT_CAPACITY];
         this.n = 0;
+        this.comparator = comparator;
     }
 
     /**
@@ -37,9 +50,9 @@ public class PriorityQueueCustom<T> {
     }
 
     /**
-     * Извлекает и возвращает минимальный элемент за O(log n).
+     * Извлекает и возвращает элемент с наивысшим приоритетом за O(log n).
      *
-     * @return минимальный элемент
+     * @return элемент с наивысшим приоритетом
      * @throws NoSuchElementException если очередь пуста
      */
     @SuppressWarnings("unchecked")
@@ -47,20 +60,20 @@ public class PriorityQueueCustom<T> {
         if (n == 0) {
             throw new NoSuchElementException("Queue is empty");
         }
-        T min = (T) arr[0];
+        T top = (T) arr[0];
         n--;
         arr[0] = arr[n];
-        arr[n] = null; // чтобы не было утечки памяти
+        arr[n] = null; // очищаем ссылку, чтобы не было утечки памяти
         if (n > 0) {
             siftDown(0);
         }
-        return min;
+        return top;
     }
 
     /**
-     * Возвращает минимальный элемент без удаления за O(1).
+     * Возвращает элемент с наивысшим приоритетом без удаления за O(1).
      *
-     * @return минимальный элемент или null, если очередь пуста
+     * @return элемент с наивысшим приоритетом или null, если очередь пуста
      */
     @SuppressWarnings("unchecked")
     public T peek() {
@@ -137,6 +150,9 @@ public class PriorityQueueCustom<T> {
 
     @SuppressWarnings("unchecked")
     private int compare(Object a, Object b) {
+        if (comparator != null) {
+            return comparator.compare((T) a, (T) b);
+        }
         return ((Comparable<? super T>) a).compareTo((T) b);
     }
 }
