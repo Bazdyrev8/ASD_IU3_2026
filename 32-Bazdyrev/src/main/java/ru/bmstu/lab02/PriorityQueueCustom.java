@@ -21,7 +21,7 @@ public class PriorityQueueCustom<T> {
     }
 
     /**
-     * Создаёт пустую очередь с заданным comparator.
+     * Создаёт пустую очередь с заданным компаратором.
      * Если comparator равен null, используется естественный порядок.
      *
      * @param comparator компаратор для определения приоритета
@@ -68,6 +68,39 @@ public class PriorityQueueCustom<T> {
             siftDown(0);
         }
         return top;
+    }
+
+    /**
+     * Удаляет первое вхождение элемента по значению за O(n).
+     *
+     * @param item удаляемый элемент
+     * @return true, если элемент найден и удалён, иначе false
+     */
+    public boolean remove(T item) {
+        if (item == null || n == 0) {
+            return false;
+        }
+        int index = -1;
+        for (int i = 0; i < n; i++) {
+            if (item.equals(arr[i])) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) {
+            return false;
+        }
+        n--;
+        if (index == n) {
+            arr[n] = null;
+            return true;
+        }
+        arr[index] = arr[n];
+        arr[n] = null;
+        // Перенесённый элемент может нарушать порядок кучи как вниз, так и вверх
+        siftDown(index);
+        siftUp(index);
+        return true;
     }
 
     /**
