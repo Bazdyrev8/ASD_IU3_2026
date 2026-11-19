@@ -230,4 +230,46 @@ class PriorityQueueCustomTest {
         assertEquals(5, pq.poll());
         assertTrue(pq.isEmpty());
     }
+
+    @Test
+    void shouldBuildHeapFromArrayInLinearTime() {
+        Integer[] input = {9, 4, 7, 1, -2, 6, 5, 4};
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>(input);
+
+        int[] expected = {-2, 1, 4, 4, 5, 6, 7, 9};
+        assertEquals(expected.length, pq.size());
+        for (int exp : expected) {
+            assertEquals(exp, pq.poll());
+        }
+        assertTrue(pq.isEmpty());
+    }
+
+    @Test
+    void shouldBuildEmptyHeapFromEmptyArrayAndAllowAdding() {
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>(new Integer[0]);
+        assertTrue(pq.isEmpty());
+        assertEquals(0, pq.size());
+
+        pq.add(10);
+        pq.add(3);
+        assertEquals(3, pq.poll());
+        assertEquals(10, pq.poll());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenBuildingFromNullArrayOrNullElement() {
+        assertThrows(NullPointerException.class, () -> new PriorityQueueCustom<>((Integer[]) null));
+        assertThrows(NullPointerException.class, () -> new PriorityQueueCustom<>(new Integer[]{1, null, 3}));
+    }
+
+    @Test
+    void shouldNotAffectHeapWhenSourceArrayIsModified() {
+        Integer[] input = {5, 2, 8};
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>(input);
+        input[0] = -100;
+
+        assertEquals(2, pq.poll());
+        assertEquals(5, pq.poll());
+        assertEquals(8, pq.poll());
+    }
 }
