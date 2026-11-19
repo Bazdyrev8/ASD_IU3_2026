@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
 
@@ -103,5 +104,59 @@ class PriorityQueueCustomTest {
         assertEquals("apple", pq.poll());
         assertEquals("banana", pq.poll());
         assertEquals("cherry", pq.poll());
+    }
+
+    @Test
+    void shouldWorkAsMaxHeapWithReverseComparator() {
+        PriorityQueueCustom<Integer> maxHeap = new PriorityQueueCustom<>(Comparator.<Integer>reverseOrder());
+        int[] input = {5, 1, 9, -3, 0, 7, 2};
+        for (int x : input) {
+            maxHeap.add(x);
+        }
+
+        int[] expected = {9, 7, 5, 2, 1, 0, -3};
+        for (int exp : expected) {
+            assertEquals(exp, maxHeap.peek());
+            assertEquals(exp, maxHeap.poll());
+        }
+        assertTrue(maxHeap.isEmpty());
+    }
+
+    @Test
+    void shouldWorkAsMinHeapWithExplicitComparator() {
+        PriorityQueueCustom<Integer> minHeap = new PriorityQueueCustom<>(Comparator.<Integer>naturalOrder());
+        minHeap.add(10);
+        minHeap.add(3);
+        minHeap.add(7);
+
+        assertEquals(3, minHeap.poll());
+        assertEquals(7, minHeap.poll());
+        assertEquals(10, minHeap.poll());
+    }
+
+    @Test
+    void shouldOrderStringsByLengthUsingCustomComparator() {
+        PriorityQueueCustom<String> pq = new PriorityQueueCustom<>(
+                (a, b) -> Integer.compare(a.length(), b.length())
+        );
+        pq.add("elephant");
+        pq.add("cat");
+        pq.add("tiger");
+
+        assertEquals("cat", pq.poll());
+        assertEquals("tiger", pq.poll());
+        assertEquals("elephant", pq.poll());
+    }
+
+    @Test
+    void shouldUseNaturalOrderWhenComparatorIsNull() {
+        PriorityQueueCustom<Integer> pq = new PriorityQueueCustom<>((Comparator<Integer>) null);
+        pq.add(4);
+        pq.add(1);
+        pq.add(2);
+
+        assertEquals(1, pq.poll());
+        assertEquals(2, pq.poll());
+        assertEquals(4, pq.poll());
     }
 }
