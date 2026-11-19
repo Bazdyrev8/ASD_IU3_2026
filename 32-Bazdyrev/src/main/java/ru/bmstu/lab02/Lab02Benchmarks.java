@@ -6,9 +6,7 @@ import java.util.Locale;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-/**
- * Сравнение производительности структур Лабораторной работы №2 со стандартной библиотекой.
- */
+// Сравнение производительности структур Лабораторной работы №2 со стандартной библиотекой.
 public class Lab02Benchmarks {
     private static final int[] SIZES = {10_000, 50_000, 100_000};
     private static final int LARGE_SIZE = 100_000;
